@@ -236,7 +236,7 @@ case ${TERM} in
         middle="$middle"':'
     fi
 
-    PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }'echo -ne "\033]0;'"$middle"'${PWD}\007"'
+    PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }'echo -ne "\033]0;'"$middle"'${PWD/#$HOME/\~}\007"'
     unset middle
     unset middle_user
     unset middle_hostname
