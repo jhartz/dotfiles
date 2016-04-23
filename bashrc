@@ -9,8 +9,10 @@
 #       this user account. This is used for the "open"/"openfolder" functions.
 #   2.  To hide the machine name from the from PS1 and PROMPT_COMMAND, set
 #       _NO_MACHINE_NAME in the parent bashrc.
-#   3.  Source this file.
-#   4.  Unset _GRAPHICAL_USER and/or _NO_MACHINE_NAME if your heart desires.
+#   3.  To enable special PS1 stuff when inside a git repo, set _GIT_PS1 in
+#       the parent bashrc.
+#   4.  Source this file.
+#   5.  Unset _GRAPHICAL_USER and/or _NO_MACHINE_NAME if your heart desires.
 
 
 if [ -d "$HOME/bin" ]; then
@@ -128,9 +130,11 @@ alias ...=openfolder
 ##################
 
 
-[ -r /usr/share/git/completion/git-prompt.sh ] && . /usr/share/git/completion/git-prompt.sh
-export GIT_PS1_SHOWDIRTYSTATE=1
-export GIT_PS1_SHOWUNTRACKEDFILES=1
+if [ "$_GIT_PS1" ]; then
+    [ -r /usr/share/git/completion/git-prompt.sh ] && . /usr/share/git/completion/git-prompt.sh
+    export GIT_PS1_SHOWDIRTYSTATE=1
+    export GIT_PS1_SHOWUNTRACKEDFILES=1
+fi
 
 # /home/jake/bin/include/colors
 RED="$(tput setaf 1)"
@@ -152,43 +156,65 @@ __jobscount() {
 
 
 __curdir() {
-    dir="$1"
+    local dir="$1"
+
     # If the parameters were passed correctly...
-    if [ "$dir" ]; then
-        gitRepoDir=""
-        gitRepoSubDir=""
-        # If we're in a git repository...
-        if [ "$(__git_ps1)" != "" ]; then
-            while true; do
-                # If we're in the root of the repo or at the root of the filesystem or home directory...
-                if ls .git >/dev/null 2>&1 || [ "${#dir}" -lt 3 ]; then
-                    break
-                else
-                    # Not at the root of the git repo yet
-                    cd ..
-                    otherDirs="$(echo "$dir" | sed 's/\/[^/]*$//')"
-                    thisDir="${dir:${#otherDirs}}"
-                    dir="$otherDirs"
-                    gitRepoDir="$thisDir$gitRepoDir"
-                fi
-            done
-            # Make pretty
-            otherDirs="$(echo "$dir" | sed 's/\/[^/]*$//')"
-            thisDir="${dir:$(expr "${#otherDirs}" "+" "1")}"
-            dir="$otherDirs/"
-            gitRepoSubDir="$gitRepoDir"
-            gitRepoDir="$thisDir"
-        fi
-        if [ "$2" = "1" ]; then
-            # The part of the path before the git repo
+    if [ ! "$dir" ]; then
+        return
+    fi
+
+    # If we're not worrying about the git stuff...
+    if [ ! "$_GIT_PS1" ]; then
+        if [ "$2" = 1 ]; then
             echo "$dir"
-        elif [ "$2" = "2" ]; then
-            # The name of the root dir of the git repo
-            echo "$gitRepoDir"
-        elif [ "$2" = "3" ]; then
-            # Subdirectory of the root dir of the git repo that we're in
-            echo "$gitRepoSubDir"
         fi
+        return
+    fi
+
+    local gitRepoDir=""
+    local gitRepoSubDir=""
+
+
+    # If we're in a git repository...
+    if [ "$(__git_ps1)" != "" ]; then
+        local thisDir=""
+        local otherDirs=""
+
+        # Find the root of the repo
+        while true; do
+            # If we're in the root of the repo or at the root of the filesystem
+            # or the home directory...
+            if ls .git >/dev/null 2>&1 || [ "${#dir}" -lt 3 ]; then
+                break
+            else
+                # Not at the root of the git repo yet
+                cd ..
+                otherDirs="$(echo "$dir" | sed 's/\/[^/]*$//')"
+                thisDir="${dir:${#otherDirs}}"
+                dir="$otherDirs"
+                gitRepoDir="$thisDir$gitRepoDir"
+            fi
+        done
+
+        # Make pretty
+        otherDirs="$(echo "$dir" | sed 's/\/[^/]*$//')"
+        thisDir="${dir:$(expr "${#otherDirs}" "+" "1")}"
+
+        dir="$otherDirs/"
+        gitRepoSubDir="$gitRepoDir"
+        gitRepoDir="$thisDir"
+    fi
+
+    if [ "$2" = "1" ]; then
+        # The part of the path before the git repo
+        echo "$dir"
+    elif [ "$2" = "2" ]; then
+        # The name of the root dir of the git repo
+        echo "$gitRepoDir"
+    elif [ "$2" = "3" ]; then
+        # Subdirectory of the root dir of the git repo that we're in
+        echo -n "$gitRepoSubDir"
+        __git_ps1 " (%s)"
     fi
 }
 
@@ -205,7 +231,7 @@ hostname_part='@\h'
 if [ "$_NO_MACHINE_NAME" ]; then hostname_part=""; fi
 
 # [return code] [job counts] username@hostname:pwd [git branch] $
-PS1='\['"$BOLD$TEAL"'\]$(a="$?"; if [ "$a" != "0" ]; then echo "$a "; fi)\['"$TEAL"'\]$(__jobscount)\['"$BLACK"'\]\u'"$hostname_part"':\['"$TEAL"'\]$(__curdir "\w" 1)\['"$BOLD"'\]$(__curdir "\w" 2)\['"$BLACK$TEAL"'\]$(__curdir "\w" 3)$(__git_ps1 " (\['"$TEAL$BOLD"'\]%s\['"$BLACK$TEAL"'\])")\$\['"$BLACK"'\] '
+PS1='\['"$BOLD$TEAL"'\]$(a="$?"; if [ "$a" != "0" ]; then echo "$a "; fi)\['"$TEAL"'\]$(__jobscount)\['"$BLACK"'\]\u'"$hostname_part"':\['"$TEAL"'\]$(__curdir "\w" 1)\['"$BOLD"'\]$(__curdir "\w" 2)\['"$BLACK$TEAL"'\]$(__curdir "\w" 3)\$\['"$BLACK"'\] '
 #PS1='$(a="$?"; if [ "$a" != "0" ]; then echo "$a "; fi)\u@\h:\w\$ '
 PS2='> '
 PS3='> '
