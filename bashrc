@@ -116,7 +116,7 @@ openfolder() {
             item="$(pwd)"
         fi
         item="$(dirname "$item")"
-        sudo -EHu jake xdg-open "$item"
+        sudo -EHu "$_GRAPHICAL_USER" xdg-open "$item"
     fi
 }
 alias ..=open
@@ -220,8 +220,8 @@ case ${TERM} in
     middle=""
     middle_user=0
     if [ "$(id -un)" != "$_GRAPHICAL_USER" ]; then middle_user=1; fi
-    middle_hostname=0
-    if [ "$_NO_MACHINE_NAME" ]; then middle_hostname=1; fi
+    middle_hostname=1
+    if [ "$_NO_MACHINE_NAME" ]; then middle_hostname=0; fi
 
     if [ $middle_user -eq 1 ]; then
         middle="$middle"'${USER}'
