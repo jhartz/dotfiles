@@ -1,0 +1,12 @@
+[color]
+    diff = auto
+    status = auto
+    branch = auto
+[alias]
+    hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
+    s = status -s
+[user]
+    name = Jake Hartz
+    email = jhartz@outlook.com
+[push]
+	default = matching
