@@ -84,6 +84,11 @@ c() {
     cd "$@" && ls
 }
 
+# cd && ll
+cl() {
+    cd "$@" && ls -alF
+}
+
 # sudo shortcut
 bitch() {
     lastcmd="$(fc -ln -- -1)"
