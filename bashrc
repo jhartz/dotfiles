@@ -156,19 +156,15 @@ openfolder() {
 alias ..=open
 alias ...=openfolder
 
-# do something in a subshell with a permissive umask
-subshell_g() {
-    (umask 007; "$@")
+# do something in a subshell with a different mask
+subshell_u() {
+    (umask 077; "$@")
 }
-subshell_e() {
+subshell_go() {
     (umask 022; "$@")
 }
-subshell_ge() {
-    (umask 002; "$@")
-}
-alias .g=subshell_g
-alias .e=subshell_e
-alias .ge=subshell_ge
+alias .u=subshell_u
+alias .go=subshell_go
 
 
 ##################
