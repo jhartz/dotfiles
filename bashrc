@@ -71,12 +71,41 @@ export EDITOR="vim"
 
 # Calculator
 =() {
-    calc="$@"
+    local calc="$@"
     if [ "$calc" ] ; then
         bc -l <<< "scale=10;$calc"
     else
         man bc
     fi
+}
+
+# Time calculator
+==() {
+    local hours=0
+    local mins=0
+    while true; do
+        local time=0
+        printf "%02d:%02d += " "$hours" "$mins"
+        read time
+        if [ ! "$time" ]; then
+            break
+        fi
+
+        local parts=(${time//:/ })
+        if [ "${#parts[@]}" = 1 ]; then
+            # Just minutes
+            mins="$(expr "$mins" + "${parts[0]}")"
+        else
+            # hours:minutes
+            hours="$(expr "$hours" + "${parts[0]}")"
+            mins="$(expr "$mins" + "${parts[1]}")"
+        fi
+        # Make sure mins < 60
+        while [ "$mins" -ge 60 ]; do
+            hours="$(expr "$hours" + 1)"
+            mins="$(expr "$mins" - 60)"
+        done
+    done
 }
 
 # cd && ls
