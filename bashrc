@@ -127,6 +127,20 @@ openfolder() {
 alias ..=open
 alias ...=openfolder
 
+# do something in a subshell with a permissive umask
+subshell_g() {
+    (umask 007; "$@")
+}
+subshell_e() {
+    (umask 022; "$@")
+}
+subshell_ge() {
+    (umask 002; "$@")
+}
+alias .g=subshell_g
+alias .e=subshell_e
+alias .ge=subshell_ge
+
 
 ##################
 ## Shell Prompt ##
