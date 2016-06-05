@@ -179,15 +179,19 @@ if [ "$_GIT_PS1" ]; then
 fi
 
 # /home/jake/bin/include/colors
-RED="$(tput setaf 1)"
-GREEN="$(tput setaf 2)"
-YELLOW="$(tput setaf 3)" # This is more of a "mustard yellow"
-BLUE="$(tput setaf 4)"
-PURPLE="$(tput setaf 5)"
-TEAL="$(tput setaf 6)"
+case ${TERM} in
+  xterm*|rxvt*|Eterm|aterm|kterm|gnome*)
+    RED="$(tput setaf 1)"
+    GREEN="$(tput setaf 2)"
+    YELLOW="$(tput setaf 3)" # This is more of a "mustard yellow"
+    BLUE="$(tput setaf 4)"
+    PURPLE="$(tput setaf 5)"
+    TEAL="$(tput setaf 6)"
 
-BOLD="$(tput bold)"
-BLACK="$(tput sgr0)"
+    BOLD="$(tput bold)"
+    BLACK="$(tput sgr0)"
+    ;;
+esac
 
 
 __jobscount() {
