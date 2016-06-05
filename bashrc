@@ -69,6 +69,19 @@ export EDITOR="vim"
 ########################
 
 
+# Temp HTTP server
+http() {
+    if which python3 >/dev/null 2>&1; then
+        python3 -m http.server "$@"
+    elif which python2 >/dev/null 2>&1; then
+        python2 -m SimpleHTTPServer "$@"
+    else
+        # Probably python 2
+        python -m SimpleHTTPServer "$@"
+    fi
+}
+
+
 # Calculator
 =() {
     local calc="$@"
