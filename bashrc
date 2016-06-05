@@ -34,7 +34,8 @@ alias ll='ls -alF'
 alias lh='ll -h'
 alias l='ls -F'
 
-alias go='git checkout'
+#alias go='git checkout'
+# (conflicts with golang)
 
 alias exir='exit'
 alias cim=vim
