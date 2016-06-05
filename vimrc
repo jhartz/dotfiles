@@ -62,8 +62,10 @@ filetype plugin indent on
 syntax on
 
 " Use '[' and ']' keys to switch between tabs
-nnoremap [ :tabp<Enter>
-nnoremap ] :tabn<Enter>
+"nnoremap [ :tabp<Enter>
+"nnoremap ] :tabn<Enter>
+nnoremap , :tabp<Enter>
+nnoremap . :tabn<Enter>
 
 " Press jk or kj rapidly to exit insert mode
 imap jk <Esc>
