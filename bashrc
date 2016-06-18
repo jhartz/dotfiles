@@ -12,7 +12,7 @@
 #   3.  To enable special PS1 stuff when inside a git repo, set _GIT_PS1 in
 #       the parent bashrc.
 #   4.  Source this file.
-#   5.  Unset _GRAPHICAL_USER and/or _NO_MACHINE_NAME if your heart desires.
+#   5.  Unset _NO_MACHINE_NAME if your heart desires.
 
 
 if [ -d "$HOME/bin" ]; then

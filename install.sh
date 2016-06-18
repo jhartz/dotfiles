@@ -14,6 +14,10 @@ set -e
 # Files which should be sourced, not symlinked
 SHELL_FILES=(".bashrc" ".profile" ".bash_profile")
 
+# Include in shell files before/after the "source" line
+SHELL_PRE="_GRAPHICAL_USER=\"$(id -un)\""
+SHELL_POST=""
+
 
 # Usage message
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
@@ -77,7 +81,9 @@ for file in "$DIR"/*; do
 
 ############################
 # Added from Jake's Dotfiles ($DIR)
+$SHELL_PRE
 . "$file"
+$SHELL_POST
 
 EOF
         echo "Source line added to $dotfile for $file"
