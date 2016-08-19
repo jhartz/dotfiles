@@ -50,6 +50,7 @@ alias swaptop="swapon --show"
 
 alias syslogtail='journalctl -xe'
 alias syslog='journalctl -xe'
+alias dump='hexdump -C'
 
 alias root='sudo -EHs'
 
