@@ -7,6 +7,6 @@
     s = status -s
 [user]
     name = Jake Hartz
-    email = jhartz@outlook.com
+    email = jake+git@hartz.io
 [push]
 	default = matching
