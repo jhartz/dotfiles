@@ -148,24 +148,30 @@ alias plz=bitch
 
 # open something using xdg-open as the graphical user
 open() {
+    item="$1"
+    if [ ! "$item" ]; then
+        # No item specified, use current directory
+        item="."
+    fi
+
     if [ "$_GRAPHICAL_USER" ]; then
-        item="$1"
-        if [ ! "$item" ]; then
-            # No item specified, use current directory
-            item="."
-        fi
         sudo -EHu "$_GRAPHICAL_USER" xdg-open "$item"
+    else
+        xdg-open "$item"
     fi
 }
 openfolder() {
+    item="$1"
+    if [ ! "$item" ]; then
+        # No item specified; use current directory
+        item="$(pwd)"
+    fi
+    item="$(dirname "$item")"
+
     if [ "$_GRAPHICAL_USER" ]; then
-        item="$1"
-        if [ ! "$item" ]; then
-            # No item specified; use current directory
-            item="$(pwd)"
-        fi
-        item="$(dirname "$item")"
         sudo -EHu "$_GRAPHICAL_USER" xdg-open "$item"
+    else
+        xdg-open "$item"
     fi
 }
 alias ..=open
