@@ -19,6 +19,12 @@ if [ -d "$HOME/bin" ]; then
     export PATH="$PATH:$HOME/bin"
 fi
 
+for d in $HOME/.gem/ruby/*/bin; do
+    if [ -d "$d" ]; then
+        export PATH="$PATH:$d"
+    fi
+done
+
 
 #############
 ## Aliases ##
@@ -26,9 +32,16 @@ fi
 
 
 alias t=true
-alias grep='grep --color'
+
+# Some systems don't support --color for grep or ls
+if echo test | grep --color test >/dev/null 2>&1; then
+    alias grep='grep --color'
+fi
+if ls --color=auto >/dev/null 2>&1; then
+    alias ls='ls --color=auto -N'
+fi
+
 alias lsq='/bin/ls'
-alias ls='ls --color=auto -N'
 alias la='ls -A'
 alias ll='ls -alF'
 alias lh='ll -h'
@@ -131,6 +144,11 @@ c() {
 # cd && ll
 cl() {
     cd "$@" && ls -alF
+}
+
+# mkdir && cd
+mc() {
+    mkdir "$@" && cd "${@:$#}" && ls
 }
 
 # sudo shortcut
