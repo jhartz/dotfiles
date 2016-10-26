@@ -45,15 +45,16 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$HOME"
 
 # If we're located in a subdir of $HOME, let's cut that off
-if [[ $DIR = "$HOME"* ]]; then
-    LEN="${#HOME}"
-    DIR="${DIR:$LEN}"
-    # Trim leading "/", but still make sure it's relative
-    if [ "${DIR:0:1}" = "/" ]; then
-        DIR="${DIR:1}"
-    fi
-    DIR="./$DIR"
-fi
+# (just kidding ... best to have an absolute path to make sourcing work)
+#if [[ $DIR = "$HOME"* ]]; then
+#    LEN="${#HOME}"
+#    DIR="${DIR:$LEN}"
+#    # Trim leading "/", but still make sure it's relative
+#    if [ "${DIR:0:1}" = "/" ]; then
+#        DIR="${DIR:1}"
+#    fi
+#    DIR="./$DIR"
+#fi
 
 
 # Check if an array contains an element
