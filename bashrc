@@ -4,6 +4,7 @@
 # The file sourcing it will be called the "parent bashrc".
 #
 # Directions for the parent bashrc:
+#   0.  To enable color, set _BASHRC_USE_COLOR in the parent bashrc.
 #   1.  If there is only one account on the machine who runs a graphical
 #       environment (X11), then, in the parent bashrc, set _GRAPHICAL_USER to
 #       this user account. This is used for the "open"/"openfolder" functions.
@@ -218,19 +219,21 @@ if [ "$_GIT_PS1" ]; then
 fi
 
 # /home/jake/bin/include/colors
-case ${TERM} in
-  xterm*|rxvt*|Eterm|aterm|kterm|gnome*)
-    RED="$(tput setaf 1)"
-    GREEN="$(tput setaf 2)"
-    YELLOW="$(tput setaf 3)" # This is more of a "mustard yellow"
-    BLUE="$(tput setaf 4)"
-    PURPLE="$(tput setaf 5)"
-    TEAL="$(tput setaf 6)"
+if [ "$_BASHRC_USE_COLOR" ]; then
+    case ${TERM} in
+      xterm*|rxvt*|Eterm|aterm|kterm|gnome*)
+        RED="$(tput setaf 1)"
+        GREEN="$(tput setaf 2)"
+        YELLOW="$(tput setaf 3)" # This is more of a "mustard yellow"
+        BLUE="$(tput setaf 4)"
+        PURPLE="$(tput setaf 5)"
+        TEAL="$(tput setaf 6)"
 
-    BOLD="$(tput bold)"
-    BLACK="$(tput sgr0)"
-    ;;
-esac
+        BOLD="$(tput bold)"
+        BLACK="$(tput sgr0)"
+        ;;
+    esac
+fi
 
 
 __jobscount() {
