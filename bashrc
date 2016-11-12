@@ -48,6 +48,7 @@ alias ll='ls -alF'
 alias lh='ll -h'
 alias l='ls -F'
 
+alias submodule='git submodule update --init --recursive'
 #alias go='git checkout'
 # (conflicts with golang)
 
@@ -83,6 +84,17 @@ export EDITOR="vim"
 ########################
 ## Shortcut Functions ##
 ########################
+
+
+succeed() {
+    echo "GOOD"
+    return 0
+}
+
+fail() {
+    >&2 echo "BAD"
+    return 1
+}
 
 
 # Temp HTTP server
