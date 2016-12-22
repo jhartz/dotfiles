@@ -210,10 +210,10 @@ alias ...=openfolder
 
 # do something in a subshell with a different mask
 subshell_u() {
-    (umask 077; "$@")
+    (umask 0077; echo -n "umask: "; umask -S; "$@")
 }
 subshell_go() {
-    (umask 022; "$@")
+    (umask 0022; echo -n "umask: "; umask -S; "$@")
 }
 alias .u=subshell_u
 alias .go=subshell_go
