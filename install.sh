@@ -15,7 +15,12 @@ set -e
 SHELL_FILES=(".bashrc" ".profile" ".bash_profile")
 
 # Include in shell files before/after the "source" line
-SHELL_PRE="_GRAPHICAL_USER=\"$(id -un)\""
+SHELL_PRE="# For more explanation of these variables (and others you can set),
+# see Jake's bashrc.
+# Use color in the shell prompt
+_BASHRC_USE_COLOR=1
+# User who's running a graphical environment
+_GRAPHICAL_USER=\"$(id -un)\""
 SHELL_POST=""
 
 
@@ -34,7 +39,7 @@ fi
 # Whether we should actually make changes
 CHANGE=1
 if [ "$1" = "-d" ] || [ "$1" = "--dry-run" ]; then
-    echo "Not writing changes to disk"
+    echo "::: Not writing changes to disk :::"
     CHANGE=0
 fi
 
@@ -70,13 +75,17 @@ contains() {
 # Loop thru all the dotfiles
 for file in "$DIR"/*; do
     bname="$(basename "$file")"
-    if [ "$bname" = "README.md" ] || [ "$bname" = "install.sh" ] || [ ! -f "$file" ]; then
+    if [ "$bname" = "README.md" ] || [ "$bname" = "install.sh" ] || \
+       [ "${bname:0:4}" = "NOTE" ] || [ ! -f "$file" ]
+    then
         continue
     fi
 
     dotfile=".$bname"
 
-    if contains "$bname" "${SHELL_FILES[@]}" || contains "$dotfile" "${SHELL_FILES[@]}"; then
+    if contains "$bname" "${SHELL_FILES[@]}" || \
+       contains "$dotfile" "${SHELL_FILES[@]}"
+    then
         # Add a line to source the file
         [ "$CHANGE" -eq 1 ] && cat <<EOF >> "$dotfile"
 
