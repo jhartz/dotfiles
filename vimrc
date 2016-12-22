@@ -55,15 +55,36 @@ set number
 " try to use colors that look good on a light background.
 set background=light
 
-" Highlight lines longer than 80 characters
-"match Error '\%>80v.\+'
-
+" Turn on indentation and syntax highlighting
 filetype plugin indent on
 syntax on
+
+" For compatibility with vimwiki
+set nocompatible
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Enforcing *dat* 80 character line length limit
+
+" Color to use for highlighting:
+highlight OverLength ctermbg=gray
+
+" Highlight the part of the line after column 80 (for long lines)
+"match OverLength '\%>80v.\+'
+
+" Highlight the 80th column on long lines
+2mat OverLength '\%80v.'
+
+" Highlight the 80th column on every line (even short ones)
+"highlight ColorColumn ctermbg=gray
+"set colorcolumn=80
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Use '[' and ']' keys to switch between tabs
 "nnoremap [ :tabp<Enter>
 "nnoremap ] :tabn<Enter>
+" Use ',' and '.' keys to switch between tabs
 nnoremap , :tabp<Enter>
 nnoremap . :tabn<Enter>
 
