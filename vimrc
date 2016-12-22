@@ -1,6 +1,8 @@
 " Jake's vimrc
-
 " http://vimdoc.sourceforge.net/htmldoc/options.html
+
+" Enable modelines (NOTE: Be careful -- can be dangerous)
+set modeline
 
 " Number of spaces that a <Tab> in the file counts for
 set tabstop=4
@@ -62,7 +64,7 @@ syntax on
 " For compatibility with vimwiki
 set nocompatible
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Enforcing *dat* 80 character line length limit
 
@@ -79,7 +81,7 @@ highlight OverLength ctermbg=gray
 "highlight ColorColumn ctermbg=gray
 "set colorcolumn=80
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Use '[' and ']' keys to switch between tabs
 "nnoremap [ :tabp<Enter>
@@ -91,3 +93,12 @@ nnoremap . :tabn<Enter>
 " Press jk or kj rapidly to exit insert mode
 imap jk <Esc>
 imap kj <Esc>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Recognize .P as prolog
+au BufRead,BufNewFile *.P set filetype=prolog tabstop=4 shiftwidth=4 expandtab smarttab
+
+" Turn off auto line breaking in SML
+au BufRead,BufNewFile *.sml set tw=0
+
