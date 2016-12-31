@@ -55,6 +55,7 @@ Usage: install.sh [options]
 Options:
     -h      Show this usage message.
     -d      Don't actually make any changes to the filesystem ("dry run").
+    -a      Always ask before making changes.
     -f ...  Look for dotfiles in the directory specified ("from").
             (default: directory containing this script)
     -t ...  Install dotfiles to the directory specified ("to").
@@ -75,6 +76,9 @@ fi
 # Whether we should actually make changes
 CHANGE=1
 
+# Whether to always ask before making changes
+ALWAYS_ASK=0
+
 # The directory to look for dotfiles in
 # (default: where this script is located)
 DIR="$(dirname "${BASH_SOURCE[0]}")"
@@ -83,11 +87,13 @@ DIR="$(dirname "${BASH_SOURCE[0]}")"
 DEST="$HOME"
 
 # Parse command-line arguments
-while getopts ":hdf:t:" opt; do
+while getopts ":hdaf:t:" opt; do
     case "$opt" in
         h)  usage
             ;;
         d)  CHANGE=0
+            ;;
+        a)  ALWAYS_ASK=1
             ;;
         f)  DIR="$OPTARG"
             ;;
@@ -190,14 +196,33 @@ dotfile_name() {
     fi
 }
 
+# Ask if we should update a certain dotfile (if necessary)
+ask_for_dotfile() {
+    if [ "$ALWAYS_ASK" -ne 0 ] && [ ! "$update_all" ]; then
+        echo -n "update $1? [Y/n/a/q] "
+        read keypress
+        case "$keypress" in
+            n)  return 1;;
+            a)  update_all="yup";;
+            q)  exit 0;;
+        esac
+    fi
+    return 0
+}
+
 
 ###############################################################################
 # FINALLY... THE ACTUAL WORK
 
+update_all=""
+replace_all=""
+
 # Find any dotfiles that are sourced
 for file in "$DIR"/*; do
     bname="$(basename "$file")"
-    if is_dotfile "$bname" && is_shell_dotfile "$bname"; then
+    if is_dotfile "$bname" && is_shell_dotfile "$bname" &&
+       ask_for_dotfile "$bname"
+    then
         # Add a line to source the file
         dotfile="$(dotfile_name "$bname")"
         if [ "$CHANGE" -eq 1 ]; then
@@ -221,9 +246,9 @@ for file in "$LINKDIR"/*; do
             echo -n "replace $dotfile? [Y/n/a/q] "
             read keypress
             case "$keypress" in
-                "n" ) continue ;;
-                "a" ) replace_all="yes" ;;
-                "q" ) exit 0 ;;
+                n)  continue;;
+                a)  replace_all="yes";;
+                q)  exit 0;;
             esac
         fi
         if [ "$CHANGE" -eq 1 ]; then
