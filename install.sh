@@ -225,6 +225,7 @@ for file in "$DIR"/*; do
     then
         # Add a line to source the file
         dotfile="$(dotfile_name "$bname")"
+
         if [ "$CHANGE" -eq 1 ]; then
             cat <<EOF >> "$dotfile"
 $SHELL_PRE
@@ -232,6 +233,7 @@ $SHELL_PRE
 $SHELL_POST
 EOF
         fi
+
         echo "Source line added to $dotfile for $file"
     fi
 done
@@ -239,9 +241,12 @@ done
 # Find any dotfiles that are symlinked
 for file in "$LINKDIR"/*; do
     bname="$(basename "$file")"
-    if is_dotfile "$bname" && ! is_shell_dotfile "$bname"; then
+    if is_dotfile "$bname" && ! is_shell_dotfile "$bname" &&
+       ask_for_dotfile "$bname"
+    then
         # Symlink the file
         dotfile="$(dotfile_name "$bname")"
+
         if [ -e "$dotfile" ] && [ ! "$replace_all" ]; then
             echo -n "replace $dotfile? [Y/n/a/q] "
             read keypress
@@ -251,6 +256,7 @@ for file in "$LINKDIR"/*; do
                 q)  exit 0;;
             esac
         fi
+
         if [ "$CHANGE" -eq 1 ]; then
             ln -vnfs "$file" "$dotfile"
         else
