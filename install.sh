@@ -123,6 +123,8 @@ else
     echo "::: Not writing changes to disk"
 fi
 
+echo "::: DESTINATION: $DEST"
+
 # Working in the destination directory - makes things a lot easier
 cd "$DEST"
 
@@ -205,7 +207,7 @@ $SHELL_PRE
 $SHELL_POST
 EOF
         fi
-        echo "Source line added to $(pwd)/$dotfile for $file"
+        echo "Source line added to $dotfile for $file"
     fi
 done
 
@@ -216,7 +218,7 @@ for file in "$LINKDIR"/*; do
         # Symlink the file
         dotfile="$(dotfile_name "$bname")"
         if [ -e "$dotfile" ] && [ ! "$replace_all" ]; then
-            echo -n "replace $(pwd)/$dotfile? [Y/n/a/q] "
+            echo -n "replace $dotfile? [Y/n/a/q] "
             read keypress
             case "$keypress" in
                 "n" ) continue ;;
@@ -227,7 +229,7 @@ for file in "$LINKDIR"/*; do
         if [ "$CHANGE" -eq 1 ]; then
             ln -vnfs "$file" "$dotfile"
         else
-            echo "$(pwd)/$dotfile symlinked to $file"
+            echo "$dotfile symlinked to $file"
         fi
     fi
 done
