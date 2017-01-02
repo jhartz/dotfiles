@@ -125,14 +125,14 @@ http() {
     local hours=0
     local mins=0
     while true; do
-        local time=0
+        local utime=0
         printf "%02d:%02d += " "$hours" "$mins"
-        read time
-        if [ ! "$time" ]; then
+        read utime
+        if [ ! "$utime" ]; then
             break
         fi
 
-        local parts=(${time//:/ })
+        local parts=(${utime//:/ })
         if [ "${#parts[@]}" = 1 ]; then
             # Just minutes
             mins="$(expr "$mins" + "${parts[0]}")"
@@ -145,6 +145,44 @@ http() {
         while [ "$mins" -ge 60 ]; do
             hours="$(expr "$hours" + 1)"
             mins="$(expr "$mins" - 60)"
+        done
+    done
+}
+
+# Feet and inches calculator
+===() {
+    local feet=0
+    local inches=0
+    while true; do
+        local input=0
+        printf "%02d' %02d\" += " "$feet" "$inches"
+        read input
+        if [ ! "$input" ]; then
+            break
+        fi
+
+        input="${input//\'/\' }"
+        input="${input//\"/\" }"
+        for part in $input; do
+            case "$part" in
+                *\')
+                    # Feet part
+                    feet="$(expr "$feet" + "${part:0: -1}")"
+                    ;;
+                *\")
+                    # Inches part
+                    inches="$(expr "$inches" + "${part:0: -1}")"
+                    ;;
+                *)
+                    echo "Unknown part: $part"
+                    ;;
+            esac
+        done
+
+        # Make sure inches < 12
+        while [ "$inches" -ge 12 ]; do
+            feet="$(expr "$feet" + 1)"
+            inches="$(expr "$inches" - 12)"
         done
     done
 }
