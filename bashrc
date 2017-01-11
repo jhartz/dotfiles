@@ -98,7 +98,7 @@ fail() {
 
 
 # Temp HTTP server
-http() {
+temp-http-server() {
     if which python3 >/dev/null 2>&1; then
         python3 -m http.server "$@"
     elif which python2 >/dev/null 2>&1; then
@@ -108,6 +108,9 @@ http() {
         python -m SimpleHTTPServer "$@"
     fi
 }
+if ! which http >/dev/null 2>&1; then
+    alias http=temp-http-server
+fi
 
 
 # Calculator
