@@ -220,30 +220,40 @@ alias plz=bitch
 
 # open something using xdg-open as the graphical user
 open() {
-    item="$1"
+    local item="$1"
     if [ ! "$item" ]; then
         # No item specified, use current directory
         item="."
     fi
 
+    local opener=open
+    if which xdg-open >/dev/null 2>&1; then
+        opener=xdg-open
+    fi
+
     if [ "$_GRAPHICAL_USER" ]; then
-        sudo -EHu "$_GRAPHICAL_USER" xdg-open "$item"
+        sudo -EHu "$_GRAPHICAL_USER" $opener "$item"
     else
-        xdg-open "$item"
+        $opener "$item"
     fi
 }
 openfolder() {
-    item="$1"
+    local item="$1"
     if [ ! "$item" ]; then
         # No item specified; use current directory
         item="$(pwd)"
     fi
     item="$(dirname "$item")"
 
+    local opener=open
+    if which xdg-open >/dev/null 2>&1; then
+        opener=xdg-open
+    fi
+
     if [ "$_GRAPHICAL_USER" ]; then
-        sudo -EHu "$_GRAPHICAL_USER" xdg-open "$item"
+        sudo -EHu "$_GRAPHICAL_USER" $opener "$item"
     else
-        xdg-open "$item"
+        $opener "$item"
     fi
 }
 alias ..=open
@@ -403,10 +413,17 @@ case ${TERM} in
         middle="$middle"':'
     fi
 
-    PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }'echo -ne "\033]0;'"$middle"'${PWD/#$HOME/\~}\007"'
+    end='${PWD/#$HOME/\~}'
+    case "$OSTYPE" in
+        *darwin*|*bsd*)
+            end='${PWD/#$HOME/~}'
+            ;;
+    esac
+    PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }'echo -ne "\033]0;'"$middle$end"'\007"'
     unset middle
     unset middle_user
     unset middle_hostname
+    unset end
     ;;
 
   screen)
