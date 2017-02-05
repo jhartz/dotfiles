@@ -263,10 +263,14 @@ alias ...=openfolder
 subshell_u() {
     (umask 0077; echo -n "umask: "; umask -S; "$@")
 }
+subshell_g() {
+    (umask 0027; echo -n "umask: "; umask -S; "$@")
+}
 subshell_go() {
     (umask 0022; echo -n "umask: "; umask -S; "$@")
 }
 alias .u=subshell_u
+alias .g=subshell_g
 alias .go=subshell_go
 
 
