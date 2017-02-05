@@ -259,19 +259,29 @@ openfolder() {
 alias ..=open
 alias ...=openfolder
 
-# do something in a subshell with a different mask
-subshell_u() {
-    (umask 0077; echo -n "umask: "; umask -S; "$@")
+# do something in a subshell with a different mask, or change the umask
+switch_umask() {
+    local mask="$1"
+    shift
+    if [ "$#" -gt 0 ]; then
+        (                               \
+            ORIG_UMASK="$(umask -S)";   \
+            umask "$mask";              \
+            echo -n "umask: ";          \
+            umask -S;                   \
+            "$@";                       \
+            echo "umask: $ORIG_UMASK";  \
+        )
+    else
+        umask "$mask"
+        echo -n "umask: "
+        umask -S
+    fi
 }
-subshell_g() {
-    (umask 0027; echo -n "umask: "; umask -S; "$@")
-}
-subshell_go() {
-    (umask 0022; echo -n "umask: "; umask -S; "$@")
-}
-alias .u=subshell_u
-alias .g=subshell_g
-alias .go=subshell_go
+alias .u='switch_umask  0077'
+alias .g='switch_umask  0027'
+alias .go='switch_umask 0022'
+alias .gw='switch_umask 0002'
 
 
 ##################
