@@ -72,6 +72,8 @@ alias root='sudo -EHs'
 alias duso=sudo
 alias sodu=sudo
 
+alias fir=git
+
 
 ###########################
 ## Bash Settings/Exports ##
