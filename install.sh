@@ -36,10 +36,8 @@ SHELL_PRE="
 # For more explanation of these variables (and others you can set),
 # see Jake's bashrc.
 
-# Use color in the shell prompt
-_BASHRC_USE_COLOR=1
-# User who's running a graphical environment
-_GRAPHICAL_USER=\"$(id -un)\""
+BASHRC_COLOR_PROMPT=1
+BASHRC_GRAPHICAL_USER=\"$(id -un)\""
 
 SHELL_POST=""
 
