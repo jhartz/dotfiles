@@ -47,6 +47,7 @@ alias la='ls -A'
 alias ll='ls -alF'
 alias lh='ll -h'
 alias l='ls -F'
+alias ..='cd .. && ls'
 
 alias submodule='git submodule update --init --recursive'
 #alias go='git checkout'
@@ -218,8 +219,8 @@ alias bitch,=bitch
 alias please=bitch
 alias plz=bitch
 
-# open something using xdg-open as the graphical user
-open() {
+# open something using "open" or "xdg-open" as the graphical user
+open-this() {
     local item="$1"
     if [ ! "$item" ]; then
         # No item specified, use current directory
@@ -237,27 +238,7 @@ open() {
         $opener "$item"
     fi
 }
-openfolder() {
-    local item="$1"
-    if [ ! "$item" ]; then
-        # No item specified; use current directory
-        item="$(pwd)"
-    fi
-    item="$(dirname "$item")"
-
-    local opener=open
-    if which xdg-open >/dev/null 2>&1; then
-        opener=xdg-open
-    fi
-
-    if [ "$_GRAPHICAL_USER" ]; then
-        sudo -EHu "$_GRAPHICAL_USER" $opener "$item"
-    else
-        $opener "$item"
-    fi
-}
-alias ..=open
-alias ...=openfolder
+alias ...=open-this
 
 # do something in a subshell with a different mask, or change the umask
 switch_umask() {
