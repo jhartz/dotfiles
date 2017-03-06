@@ -120,6 +120,7 @@ alias ll='ls -alF'
 alias lh='ll -h'
 alias l='ls -F'
 alias ..='cd .. && ls'
+alias ,,='cd - && ls'
 
 alias exir='exit'
 alias cim=vim
