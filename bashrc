@@ -360,6 +360,7 @@ _ps1_dir_setup() {
 
         # Find the root of the repo (look until we're in the root of the repo
         # or at the root of the filesystem or home directory)
+        local orig_pwd="$(pwd)"
         until [ -d .git ] || [ "${#dir}" -le 2 ]; do
             # Not at the root of the git repo yet
             cd ..
@@ -368,6 +369,7 @@ _ps1_dir_setup() {
             dir="$other_dirs"
             git_repo_dir="$this_dir$git_repo_dir"
         done
+        cd "$orig_pwd"
 
         # Make pretty
         other_dirs="$(echo "$dir" | sed 's/\/[^/]*$//')"
