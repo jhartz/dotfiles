@@ -75,21 +75,6 @@ fail() {
     return 1
 }
 
-# cd && ls
-c() {
-    cd "$@" && ls
-}
-
-# cd && ll
-cl() {
-    cd "$@" && ls -alF
-}
-
-# mkdir && cd
-mc() {
-    mkdir "$@" && cd "${@:$#}" && ls
-}
-
 shut-up() {
     "$@" >/dev/null 2>&1
 }
@@ -157,6 +142,21 @@ if cmd-exists sudo; then
     alias duso=sudo
     alias sodu=sudo
 fi
+
+# cd && ls
+c() {
+    cd "$@" && ls
+}
+
+# cd && ll
+cl() {
+    cd "$@" && ls -alF
+}
+
+# mkdir && cd
+mc() {
+    mkdir "$@" && cd "${@:$#}" && ls
+}
 
 
 ###################
