@@ -408,7 +408,7 @@ _ps1_job_count() {
 }
 
 
-PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND: }_ps1_dir_setup"
+PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND; }_ps1_dir_setup"
 
 use_color=""
 if [ "$BASHRC_COLOR_PROMPT" ]; then
