@@ -332,7 +332,11 @@ _pwd() {
 
 
 if [ "$BASHRC_GIT_PROMPT" ]; then
-    [ -r /usr/share/git/completion/git-prompt.sh ] && . /usr/share/git/completion/git-prompt.sh
+    if [ -r /usr/share/git/completion/git-prompt.sh ]; then
+        . /usr/share/git/completion/git-prompt.sh
+    elif [ -r /usr/share/git-core/contrib/completion/git-prompt.sh ]; then
+        . /usr/share/git-core/contrib/completion/git-prompt.sh
+    fi
     GIT_PS1_SHOWDIRTYSTATE=1
     GIT_PS1_SHOWUNTRACKEDFILES=1
 fi
