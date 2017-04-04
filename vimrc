@@ -66,7 +66,7 @@ set nocompatible
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" Enforcing *dat* 80 character line length limit
+" Enforcing *dat* 80 or 100 character line length limit
 
 " Color to use for highlighting:
 highlight OverLength ctermbg=gray
@@ -74,12 +74,12 @@ highlight OverLength ctermbg=gray
 " Highlight the part of the line after column 80 (for long lines)
 "match OverLength '\%>80v.\+'
 
-" Highlight the 80th column on long lines
-2mat OverLength '\%80v.'
+" Highlight the 100th column on long lines
+2mat OverLength '\%100v.'
 
 " Highlight the 80th column on every line (even short ones)
-"highlight ColorColumn ctermbg=gray
-"set colorcolumn=80
+highlight ColorColumn ctermbg=234
+set colorcolumn=80
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -102,3 +102,6 @@ au BufRead,BufNewFile *.P set filetype=prolog tabstop=4 shiftwidth=4 expandtab s
 " Turn off auto line breaking in SML
 au BufRead,BufNewFile *.sml set tw=0
 
+
+" Use just the python checker instead of the pylint checker
+let g:syntastic_python_checkers = ['python']
