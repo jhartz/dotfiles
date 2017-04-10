@@ -39,7 +39,9 @@ SHELL_PRE="
 BASHRC_COLOR_PROMPT=1
 BASHRC_GRAPHICAL_USER=\"$(id -un)\""
 
-SHELL_POST=""
+SHELL_POST="
+unset BASHRC_COLOR_PROMPT
+unset BASHRC_GRAPHICAL_USER"
 
 
 ###############################################################################
