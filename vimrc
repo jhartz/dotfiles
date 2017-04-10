@@ -3,6 +3,7 @@
 
 " Enable modelines (NOTE: Be careful -- can be dangerous)
 set modeline
+set modelines=2
 
 " Number of spaces that a <Tab> in the file counts for
 set tabstop=4
