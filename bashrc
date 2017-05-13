@@ -18,7 +18,8 @@
 #
 #   BASHRC_GIT_PROMPT=1
 #       Show git repo information in the shell prompt when applicable.
-#       (Requires git-prompt.sh)
+#       (Requires git-prompt.sh -- if you have git-prompt.sh in a nonstandard
+#       location, be sure to source it before this file.)
 #
 #   BASHRC_GRAPHICAL_USER=username
 #       If there is an account on the machine that should be used for anything
