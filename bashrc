@@ -286,12 +286,13 @@ open-this() {
     fi
 
     if [ "$open_this_user" ]; then
-        sudo -EHu "$open_this_user" $opener "$item"
+        sudo -EHu "$open_this_user" $opener "$item" >/dev/null 2>&1
     else
-        $opener "$item"
+        $opener "$item" >/dev/null 2>&1
     fi
 }
 alias ...=open-this
+alias ,=open-this
 
 # do something in a subshell with a different mask, or change the umask
 switch_umask() {
