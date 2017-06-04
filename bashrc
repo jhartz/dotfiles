@@ -291,7 +291,12 @@ open-this() {
         $opener "$item" >/dev/null 2>&1
     fi
 }
-alias ...=open-this
+open-this-deprecated() {
+    echo "Deprecated; use \`, $@' instead"
+    open-this "$@"
+}
+# TODO: Once we stop using ... for open-this, use it for "cd ../.. && ls"
+alias ...=open-this-deprecated
 alias ,=open-this
 
 # do something in a subshell with a different mask, or change the umask
