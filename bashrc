@@ -13,6 +13,9 @@
 #   BASHRC_COLOR_PROMPT=1
 #       Use color in the shell prompt.
 #
+#   BASHRC_NO_UMASK=1
+#       Hide the current umask from the shell prompt.
+#
 #   BASHRC_NO_MACHINE_NAME=1
 #       Hide the machine name from the shell prompt and window title.
 #
@@ -445,6 +448,7 @@ fi
 
 hostname_part='@\h'
 [ "$BASHRC_NO_MACHINE_NAME" ] && hostname_part=""
+[ "$BASHRC_NO_UMASK" ] || hostname_part='[$(umask)]'"$hostname_part"
 last_part='\$'
 [ "$(id -u)" -eq 0 ] && last_part="$red#"
 
