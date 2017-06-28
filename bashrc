@@ -446,9 +446,9 @@ if [ "$use_color" ]; then
     reset="\\[$(tput sgr0)\\]"
 fi
 
-hostname_part='@\h'
-[ "$BASHRC_NO_MACHINE_NAME" ] && hostname_part=""
-[ "$BASHRC_NO_UMASK" ] || hostname_part='[$(umask)]'"$hostname_part"
+hostname_part=""
+[ "$BASHRC_NO_MACHINE_NAME" ] || hostname_part='@\h'"$hostname_part"
+[ "$BASHRC_NO_UMASK" ] || hostname_part='[$(a="$(umask)"; echo "${a:1}")]'"$hostname_part"
 last_part='\$'
 [ "$(id -u)" -eq 0 ] && last_part="$red#"
 
