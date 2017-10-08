@@ -63,6 +63,10 @@ if [ ! "$EDITOR" ]; then
     export EDITOR="vim"
 fi
 
+# Don't record commands that start with a space in the history ("ignorespace"),
+# and don't record duplicates ("ignoredups")
+HISTCONTROL=ignoreboth
+
 
 ########################
 ## Shortcut Functions ##
@@ -233,6 +237,11 @@ fi
         read input
         if [ ! "$input" ]; then
             break
+        fi
+
+        if [ "$input" = "in" ]; then
+            printf "%02d\"\n" "$(expr "$feet" '*' 12 + "$inches")"
+            continue
         fi
 
         input="${input//\'/\' }"
