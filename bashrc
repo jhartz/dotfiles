@@ -127,6 +127,8 @@ alias topmem="top -o '%MEM'"
 
 alias dump='hexdump -C'
 
+alias wp='telnet telnet.wmflabs.org'
+
 if cmd-exists git; then
     alias fir=git
     alias fur=git
