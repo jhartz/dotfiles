@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Symlink dotfiles into home directory
 #
 # My home, my comforting environment; my couch, TV, remote, and toaster.
