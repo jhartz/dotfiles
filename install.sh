@@ -258,10 +258,10 @@ for file in "$LINKDIR"/*; do
         fi
 
         if [ "$CHANGE" -eq 1 ]; then
-            ln -vnfs "$file" "$dotfile"
-        else
-            echo "$dotfile symlinked to $file"
+            ln -nfs "$file" "$dotfile"
         fi
+
+        echo "$dotfile symlinked to $file"
     fi
 done
 
