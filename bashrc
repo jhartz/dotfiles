@@ -105,6 +105,9 @@ if echo test | shut-up grep --color=auto test; then
 fi
 if shut-up ls --color=auto; then
     alias ls='ls --color=auto -N'
+else
+    # If no color, then always use the -F option
+    alias ls='ls -F'
 fi
 
 alias lsq='/bin/ls'
