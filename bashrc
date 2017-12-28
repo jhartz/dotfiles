@@ -193,6 +193,20 @@ if ! cmd-exists http; then
 fi
 
 
+# "telnet" thru SSL/TLS
+# (mostly because I can never remember the damn openssl incantation)
+telnet-ssl() {
+    if [ $# -eq 0 -o $# -gt 2 ]; then
+        echo "Usage:  telnet-ssl  host  [port]"
+        return 2
+    elif [ $# -eq 1 ]; then
+        openssl s_client -connect "$1:443"
+    else
+        openssl s_client -connect "$1:$2"
+    fi
+}
+
+
 # Calculator
 =() {
     local calc="$@"
