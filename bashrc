@@ -205,6 +205,16 @@ telnet-ssl() {
         openssl s_client -connect "$1:$2"
     fi
 }
+telnet-ssl-sni() {
+    if [ $# -eq 0 -o $# -gt 2 ]; then
+        echo "Usage:  telnet-ssl-sni  host  [port]"
+        return 2
+    elif [ $# -eq 1 ]; then
+        openssl s_client -servername "$1" -connect "$1:443"
+    else
+        openssl s_client -servername "$1" -connect "$1:$2"
+    fi
+}
 
 
 # Calculator
