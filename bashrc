@@ -13,10 +13,13 @@
 #   BASHRC_COLOR_PROMPT=1
 #       Use color in the shell prompt.
 #
+#   BASHRC_NO_USERNAME=1
+#       Hide the current username from the shell prompt and window title.
+#
 #   BASHRC_NO_UMASK=1
 #       Hide the current umask from the shell prompt.
 #
-#   BASHRC_NO_MACHINE_NAME=1
+#   BASHRC_NO_HOSTNAME=1
 #       Hide the machine name from the shell prompt and window title.
 #
 #   BASHRC_GIT_PROMPT=1
@@ -31,22 +34,11 @@
 
 
 # For compatibility with older versions
-if [ ! "$BASHRC_NO_MACHINE_NAME" ]; then
-    BASHRC_NO_MACHINE_NAME="$_NO_MACHINE_NAME"
-fi
-
-if [ ! "$BASHRC_GRAPHICAL_USER" ]; then
-    BASHRC_GRAPHICAL_USER="$_GRAPHICAL_USER"
-fi
-
-if [ ! "$BASHRC_COLOR_PROMPT" ]; then
-    BASHRC_COLOR_PROMPT="$_BASHRC_USE_COLOR"
-fi
-
-if [ ! "$BASHRC_GIT_PROMPT" ]; then
-    BASHRC_GIT_PROMPT="$_GIT_PS1"
-fi
-
+[ "$BASHRC_NO_HOSTNAME" ] || BASHRC_NO_HOSTNAME="$_NO_MACHINE_NAME"
+[ "$BASHRC_NO_HOSTNAME" ] || BASHRC_NO_HOSTNAME="$BASHRC_NO_MACHINE_NAME"
+[ "$BASHRC_GRAPHICAL_USER" ] || BASHRC_GRAPHICAL_USER="$_GRAPHICAL_USER"
+[ "$BASHRC_COLOR_PROMPT" ] || BASHRC_COLOR_PROMPT="$_BASHRC_USE_COLOR"
+[ "$BASHRC_GIT_PROMPT" ] || BASHRC_GIT_PROMPT="$_GIT_PS1"
 
 
 if [ -d "$HOME/bin" ]; then
@@ -105,8 +97,10 @@ if echo test | shut-up grep --color=auto test; then
 fi
 if shut-up ls --color=auto; then
     alias ls='ls --color=auto -N'
-else
-    # If no color, then always use the -F option
+elif [ -z "$CLICOLOR" ]; then
+    # On Macs, people set CLICOLOR to tell ls to use color.
+    # If this isn't set, then assume ls doesn't support color,
+    # and always use the -F option.
     alias ls='ls -F'
 fi
 
@@ -484,14 +478,19 @@ if [ "$use_color" ]; then
     reset="\\[$(tput sgr0)\\]"
 fi
 
-hostname_part=""
-[ "$BASHRC_NO_MACHINE_NAME" ] || hostname_part='@\h'"$hostname_part"
-[ "$BASHRC_NO_UMASK" ] || hostname_part='[$(a="$(umask)"; echo "${a:1}")]'"$hostname_part"
+name_part=""
+[ "$BASHRC_NO_USERNAME" ] || name_part="$name_part"'\u'
+[ "$BASHRC_NO_UMASK" ] || name_part="$name_part"'[$(a="$(umask)"; echo "${a:1}")]'
+[ "$BASHRC_NO_HOSTNAME" ] || name_part="$name_part"'@\h'
+if [ ! "$BASHRC_NO_USERNAME" ] || [ ! "$BASHRC_NO_UMASK" ] || [ ! "$BASHRC_NO_HOSTNAME" ]; then
+    name_part="$name_part"':'
+fi
+
 last_part='\$'
 [ "$(id -u)" -eq 0 ] && last_part="$red#"
 
 # [return code] [job counts] username@hostname:pwd [git branch] $
-PS1="$bold$teal"'$(a="$?"; if [ "$a" -ne 0 ]; then echo "$a "; fi)'"$reset$teal"'$(_ps1_job_count)'"$reset"'\u'"$hostname_part"':'"$teal"'$(_ps1_dir_a)'"$bold"'$(_ps1_dir_b)'"$reset$teal"'$(_ps1_dir_c)'"$last_part$reset"' '
+PS1="$bold$teal"'$(a="$?"; if [ "$a" -ne 0 ]; then echo "$a "; fi)'"$reset$teal"'$(_ps1_job_count)'"$reset$name_part$teal"'$(_ps1_dir_a)'"$bold"'$(_ps1_dir_b)'"$reset$teal"'$(_ps1_dir_c)'"$last_part$reset"' '
 
 if [ "$use_color" ]; then
     unset red
@@ -504,7 +503,7 @@ if [ "$use_color" ]; then
     unset reset
 fi
 unset use_color
-unset hostname_part
+unset name_part
 unset last_part
 
 PS2='> '
@@ -515,8 +514,12 @@ PS4='+ '
 case "$TERM" in
     xterm*|rxvt*|Eterm|aterm|kterm|gnome*)
         middle=""
-        [ ! "$BASHRC_NO_MACHINE_NAME" ] && middle='@${HOSTNAME%%.*}'
-        PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }'printf "\033]0;%s%s:%s\007" "${USER}" "'"$middle"'" "$(_pwd)"'
+        [ "$BASHRC_NO_USERNAME" ] || middle="$middle"'${USER}'
+        [ "$BASHRC_NO_HOSTNAME" ] || middle='@${HOSTNAME%%.*}'
+        if [ ! "$BASHRC_NO_USERNAME" ] || [ ! "$BASHRC_NO_HOSTNAME" ]; then
+            middle="$middle"':'
+        fi
+        PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }'printf "\033]0;%s%s\007" "'"$middle"'" "$(_pwd)"'
         unset middle
         ;;
 
