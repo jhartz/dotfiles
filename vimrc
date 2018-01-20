@@ -62,8 +62,12 @@ set background=light
 filetype plugin indent on
 syntax on
 
-" For compatibility with vimwiki
+" We don't need compatibility with vi (also required for with vimwiki)
 set nocompatible
+
+" Suffixes that get lower priority when doing tab completion for filenames.
+" These are files we are not likely to want to edit or read.
+set suffixes=.bak,~,.swp,.o,.info,.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc,.png,.jpg
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
