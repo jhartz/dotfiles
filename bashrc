@@ -146,6 +146,8 @@ fi
 
 if cmd-exists sudo; then
     alias root='sudo -EHs'
+    # Some common typos (I'm a terrible typist...)
+    alias tooy='sudo -EHs'
     alias duso=sudo
     alias sodu=sudo
 fi
