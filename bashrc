@@ -527,7 +527,7 @@ case "$TERM" in
     xterm*|rxvt*|Eterm|aterm|kterm|gnome*)
         middle=""
         [ "$BASHRC_NO_USERNAME" ] || middle="$middle"'${USER}'
-        [ "$BASHRC_NO_HOSTNAME" ] || middle='@${HOSTNAME%%.*}'
+        [ "$BASHRC_NO_HOSTNAME" ] || middle="$middle"'@${HOSTNAME%%.*}'
         if [ ! "$BASHRC_NO_USERNAME" ] || [ ! "$BASHRC_NO_HOSTNAME" ]; then
             middle="$middle"':'
         fi
