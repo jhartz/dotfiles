@@ -104,6 +104,21 @@ elif [ -z "$CLICOLOR" ]; then
     alias ls='ls -F'
 fi
 
+# Try to work around various differences in "ps" and "top"
+if shut-up ps --sort '-%cpu'; then
+    # It's GNU ps; use --sort
+    alias pscpu="ps aux --sort '-%cpu'"
+    alias psmem="ps aux --sort '-%mem'"
+    alias topcpu="top -o '%CPU'"
+    alias topmem="top -o '%MEM'"
+else
+    # It's (probably) BSD ps; hopefully "r" and "m" do what we want
+    alias pscpu="ps auxr"
+    alias psmem="ps auxm"
+    alias topcpu="top -o cpu"
+    alias topmem="top -o size"
+fi
+
 alias lsq='/bin/ls'
 alias la='ls -A'
 alias ll='ls -alF'
@@ -116,11 +131,6 @@ alias exir='exit'
 alias cim=vim
 alias bim=vim
 alias v='vim -p'
-
-alias psmem="ps aux --sort '-%mem' | head"
-alias pscpu="ps aux --sort '-%cpu' | head"
-alias topcpu="top -o '%CPU'"
-alias topmem="top -o '%MEM'"
 
 alias dump='hexdump -C'
 
