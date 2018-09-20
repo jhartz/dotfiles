@@ -56,7 +56,7 @@ set number
 " When set to "dark", Vim will try to use colors that look
 " good on a dark background. When set to "light", Vim will
 " try to use colors that look good on a light background.
-set background=light
+set background=dark
 
 " Turn on indentation and syntax highlighting
 filetype plugin indent on
