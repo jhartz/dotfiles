@@ -471,7 +471,7 @@ PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND; }_ps1_dir_setup"
 use_color=""
 if [ "$BASHRC_COLOR_PROMPT" ]; then
     case "$TERM" in
-        xterm*|rxvt*|Eterm|aterm|kterm|gnome*)
+        xterm*|rxvt*|Eterm|aterm|kterm|gnome*|screen)
             use_color=1
             ;;
     esac
