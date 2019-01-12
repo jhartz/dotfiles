@@ -227,11 +227,14 @@ telnet-ssl-sni() {
 =() {
     local calc="$@"
     if [ "$calc" ] ; then
-        bc -l <<< "scale=10;$calc"
+        bc -l <<< "scale=8;$calc"
     else
         man bc
     fi
 }
+alias bc2='bc -l <( echo "scale=2;" )'
+alias bc4='bc -l <( echo "scale=4;" )'
+alias bc8='bc -l <( echo "scale=8;" )'
 
 # Time calculator
 ==() {
