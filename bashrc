@@ -96,7 +96,11 @@ if echo test | shut-up grep --color=auto test; then
     alias grep='grep --color=auto'
 fi
 if shut-up ls --color=auto; then
-    alias ls='ls --color=auto -N'
+    if shut-up ls --group-directories-first; then
+        alias ls='ls --color=auto -N --group-directories-first'
+    else
+        alias ls='ls --color=auto -N'
+    fi
 elif [ -z "$CLICOLOR" ]; then
     # On Macs, people set CLICOLOR to tell ls to use color.
     # If this isn't set, then assume ls doesn't support color,
