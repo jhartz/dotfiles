@@ -29,6 +29,15 @@ SHELL_FILES=(".bashrc" ".profile" ".bash_profile")
 # Files which should NOT have a dot prepended before sourcing/symlinking
 NO_DOT=("bin")
 
+# Boolean options to set before sourcing shell files
+SHELL_OPTIONS=(
+    BASHRC_COLOR_PROMPT
+    BASHRC_NO_USERNAME
+    BASHRC_NO_UMASK
+    BASHRC_NO_HOSTNAME
+    BASHRC_GIT_PROMPT
+)
+
 # Include in shell files before/after the "source" line
 SHELL_PRE="
 ############################
@@ -36,11 +45,9 @@ SHELL_PRE="
 # For more explanation of these variables (and others you can set),
 # see Jake's bashrc.
 
-BASHRC_COLOR_PROMPT=1
 BASHRC_GRAPHICAL_USER=\"$(id -un)\""
 
 SHELL_POST="
-unset BASHRC_COLOR_PROMPT
 unset BASHRC_GRAPHICAL_USER"
 
 
@@ -210,6 +217,16 @@ ask_for_dotfile() {
     return 0
 }
 
+# Ask if we should include an option
+ask_for_option() {
+    echo -n "include option $1? [Y/n] "
+    read keypress
+    case "$keypress" in
+        n)  return 1;;
+    esac
+    return 0
+}
+
 
 ###############################################################################
 # FINALLY... THE ACTUAL WORK
@@ -223,18 +240,42 @@ for file in "$DIR"/*; do
     if is_dotfile "$bname" && is_shell_dotfile "$bname" &&
        ask_for_dotfile "$bname"
     then
+        # Ask about any options
+        shell_options_pre=""
+        shell_options_post=""
+        for option in "${SHELL_OPTIONS[@]}"; do
+            if ask_for_option "$option"; then
+                shell_options_pre="$shell_options_pre
+$option=1"
+                shell_options_post="$shell_options_post
+unset $option"
+            fi
+        done
+
         # Add a line to source the file
         dotfile="$(dotfile_name "$bname")"
 
         if [ "$CHANGE" -eq 1 ]; then
             cat <<EOF >> "$dotfile"
 $SHELL_PRE
+$shell_options_pre
 . "$file"
+$shell_options_post
 $SHELL_POST
 EOF
-        fi
 
-        echo "Source line added to $dotfile for $file"
+            echo "Source line added to $dotfile for $file"
+        else
+            cat <<EOF
+Would have added source line to $dotfile for $file like so:
+$SHELL_PRE
+$shell_options_pre
+. "$file"
+$shell_options_post
+$SHELL_POST
+
+EOF
+        fi
     fi
 done
 
