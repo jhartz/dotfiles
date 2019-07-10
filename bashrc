@@ -113,6 +113,7 @@ if shut-up ps --sort '-%cpu'; then
     # It's GNU ps; use --sort
     alias pscpu="ps aux --sort '-%cpu'"
     alias psmem="ps aux --sort '-%mem'"
+    # Assume we have GNU top (TODO: this isn't always true)
     alias topcpu="top -o '%CPU'"
     alias topmem="top -o '%MEM'"
 else
