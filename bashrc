@@ -140,6 +140,7 @@ alias v='vim -p'
 alias dump='hexdump -C'
 
 alias wp='telnet telnet.wmflabs.org'
+alias weather='curl wttr.in'
 
 if cmd-exists git; then
     alias fir=git
@@ -214,6 +215,16 @@ telnet-ssl() {
         openssl s_client -connect "$1:443"
     else
         openssl s_client -connect "$1:$2"
+    fi
+}
+telnet-imap-starttls() {
+    if [ $# -eq 0 -o $# -gt 2 ]; then
+        echo "Usage:  telnet-starttls-imap  host  [port]"
+        return 2
+    elif [ $# -eq 1 ]; then
+        openssl s_client -debug -starttls imap -crlf -connect "$1:143"
+    else
+        openssl s_client -debug -starttls imap -crlf -connect "$1:$2"
     fi
 }
 telnet-ssl-sni() {
