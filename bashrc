@@ -58,6 +58,13 @@ fi
 # Don't record commands that start with a space in the history ("ignorespace"),
 # and don't record duplicates ("ignoredups")
 HISTCONTROL=ignoreboth
+# Append to history file, rather than overwriting
+shopt -s histappend
+# Keep lots of history
+HISTFILESIZE=1000000
+HISTSIZE=1000000
+# Write the history after every command
+PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND; }history -a"
 
 
 ########################
