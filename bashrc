@@ -102,18 +102,22 @@ alias t=true
 if echo test | shut-up grep --color=auto test; then
     alias grep='grep --color=auto'
 fi
+_ls_args=""
 if shut-up ls --color=auto; then
-    if shut-up ls --group-directories-first; then
-        alias ls='ls --color=auto -N --group-directories-first'
-    else
-        alias ls='ls --color=auto -N'
-    fi
-elif [ -z "$CLICOLOR" ]; then
+    _ls_args="$_ls_args --color=auto"
+elif [ -z "$CLICOLOR" ] && shut-up ls -F; then
     # On Macs, people set CLICOLOR to tell ls to use color.
     # If this isn't set, then assume ls doesn't support color,
     # and always use the -F option.
-    alias ls='ls -F'
+    _ls_args="$_ls_args -F"
 fi
+if shut-up ls --group-directories-first; then
+    _ls_args="$_ls_args --group-directories-first"
+fi
+if shut-up ls -N; then
+    _ls_args="$_ls_args -N"
+fi
+alias ls="ls $_ls_args"
 
 # Try to work around various differences in "ps" and "top"
 if shut-up ps --sort '-%cpu'; then
@@ -178,6 +182,11 @@ fi
 # cd && ls
 c() {
     cd "$@" && ls
+}
+
+# cd - && ls
+-() {
+    cd - && ls
 }
 
 # cd && ll
