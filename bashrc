@@ -294,6 +294,8 @@ alias bc8='bc -l <( echo "scale=8;" )'
             hours="$(expr "$hours" + 1)"
             mins="$(expr "$mins" - 60)"
         done
+
+        # TODO: handle negatives
     done
 }
 
@@ -316,15 +318,28 @@ alias bc8='bc -l <( echo "scale=8;" )'
 
         input="${input//\'/\' }"
         input="${input//\"/\" }"
+        input="${input//-/ - }"
+        negative=
+        saw_feet_or_inches=no
         for part in $input; do
             case "$part" in
+                -)
+                    # Negation part
+                    if [ "$saw_feet_or_inches" = yes ]; then
+                        echo "Ignoring negation in the middle of the expression (negation should only be at the front)"
+                    else
+                        negative=-
+                    fi
+                    ;;
                 *\')
                     # Feet part
-                    feet="$(expr "$feet" + "${part:0: -1}")"
+                    feet="$(expr "$feet" + "$negative${part:0: -1}")"
+                    saw_feet_or_inches=yes
                     ;;
                 *\")
                     # Inches part
-                    inches="$(expr "$inches" + "${part:0: -1}")"
+                    inches="$(expr "$inches" + "$negative${part:0: -1}")"
+                    saw_feet_or_inches=yes
                     ;;
                 *)
                     echo "Unknown part: $part"
@@ -337,6 +352,18 @@ alias bc8='bc -l <( echo "scale=8;" )'
             feet="$(expr "$feet" + 1)"
             inches="$(expr "$inches" - 12)"
         done
+
+        # Make sure inches > 0
+        while [ "$inches" -lt 0 ]; do
+            feet="$(expr "$feet" - 1)"
+            inches="$(expr "$inches" + 12)"
+        done
+
+        # If feet are negative, make sure inches are too
+        if [ "$feet" -lt 0 -a "$inches" -gt 0 ]; then
+            feet="$(expr "$feet" + 1)"
+            inches="$(expr "$inches" - 12)"
+        fi
     done
 }
 
@@ -453,6 +480,7 @@ _ps1_dir_setup() {
 
         # Find the root of the repo (look until we're in the root of the repo
         # or at the root of the filesystem or home directory)
+        # TODO: avoid using "cd" here since it breaks using "cd -"
         local orig_pwd="$(pwd)"
         until [ -d .git ] || [ "${#dir}" -le 2 ]; do
             # Not at the root of the git repo yet
@@ -500,6 +528,12 @@ _ps1_job_count() {
     ((running+stopped)) && echo "${running}r/${stopped}s "
 }
 
+_ps1_kube() {
+    if type -t kube_ps1 >/dev/null; then
+        echo "$(kube_ps1) "
+    fi
+}
+
 
 PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND; }_ps1_dir_setup"
 
@@ -536,8 +570,8 @@ fi
 last_part='\$'
 [ "$(id -u)" -eq 0 ] && last_part="$red#"
 
-# [return code] [job counts] username@hostname:pwd [git branch] $
-PS1="$bold$teal"'$(a="$?"; if [ "$a" -ne 0 ]; then echo "$a "; fi)'"$reset$teal"'$(_ps1_job_count)'"$reset$name_part$teal"'$(_ps1_dir_a)'"$bold"'$(_ps1_dir_b)'"$reset$teal"'$(_ps1_dir_c)'"$last_part$reset"' '
+# [return code] [job counts] [kube] username@hostname:pwd [git branch] $
+PS1="$bold$teal"'$(a="$?"; if [ "$a" -ne 0 ]; then echo "$a "; fi)'"$reset$teal"'$(_ps1_job_count)'"$reset"'$(_ps1_kube)'"$name_part$teal"'$(_ps1_dir_a)'"$bold"'$(_ps1_dir_b)'"$reset$teal"'$(_ps1_dir_c)'"$last_part$reset"' '
 
 if [ "$use_color" ]; then
     unset red
