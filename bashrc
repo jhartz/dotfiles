@@ -119,6 +119,13 @@ if shut-up ls -N; then
 fi
 alias ls="ls $_ls_args"
 
+if echo "" | shut-up /usr/bin/which --tty-only --read-alias --read-functions --show-tilde --show-dot cat; then
+    which() {
+        (alias; declare -f) | /usr/bin/which --tty-only --read-alias --read-functions --show-tilde --show-dot "$@"
+    }
+    export -f which
+fi
+
 # Try to work around various differences in "ps" and "top"
 if shut-up ps --sort '-%cpu'; then
     # It's GNU ps; use --sort
