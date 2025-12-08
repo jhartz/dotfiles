@@ -244,7 +244,7 @@ telnet-ssl() {
         echo "  -quiet"
         echo "      Skip printing session and cert info (seems required for HTTP servers??)"
         echo "  -debug"
-        echo "      Prints extra debug info"
+        echo "      Prints extra debug info, including hex dump of every response"
         return 2
     fi
 
@@ -256,18 +256,19 @@ telnet-ssl() {
 telnet-imap-starttls() {
     if [ $# -ne 1 ]; then
         echo "Usage: telnet-imap-starttls host [extra openssl args]"
-        echo "Equivalent to: telnet-ssl [host] 143 -debug -starttls imap -crlf [extra openssl args]"
+        echo "Equivalent to: telnet-ssl [host] 143 -starttls imap -crlf [extra openssl args]"
         return 2
     fi
 
     host="$1"
     shift 1
-    telnet-ssl "$host" 143 -debug -starttls imap -crlf "$@"
+    telnet-ssl "$host" 143 -starttls imap -crlf "$@"
 }
 telnet-https-sni() {
     if [ $# -eq 0 ]; then
         echo "Usage: telnet-https-sni host [extra openssl args]"
         echo "Equivalent to: telnet-ssl [host] 443 -servername [host] -quiet [extra openssl args]"
+        return 2
     fi
 
     host="$1"
