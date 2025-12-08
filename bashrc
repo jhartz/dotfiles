@@ -231,34 +231,48 @@ fi
 # "telnet" thru SSL/TLS
 # (mostly because I can never remember the damn openssl incantation)
 telnet-ssl() {
-    if [ $# -eq 0 -o $# -gt 2 ]; then
-        echo "Usage:  telnet-ssl  host  [port]"
+    if [ $# -lt 2 ]; then
+        echo "Usage: telnet-ssl host port [extra openssl args]"
+        echo "Common ports:"
+        echo "  443 (HTTPS)"
+        echo "  143 (IMAP -- see also telnet-imap-starttls)"
+        echo "Common extra openssl args:"
+        echo "  -servername example.com"
+        echo "      Enable SNI with the provided domain (necessary for most HTTP servers)"
+        echo "  -crlf"
+        echo "      Overwrites LF in input to CRLF (useful when typing input manually)"
+        echo "  -quiet"
+        echo "      Skip printing session and cert info (seems required for HTTP servers??)"
+        echo "  -debug"
+        echo "      Prints extra debug info"
         return 2
-    elif [ $# -eq 1 ]; then
-        openssl s_client -connect "$1:443"
-    else
-        openssl s_client -connect "$1:$2"
     fi
+
+    host="$1"
+    port="$2"
+    shift 2
+    openssl s_client "$@" -connect "$host:$port"
 }
 telnet-imap-starttls() {
-    if [ $# -eq 0 -o $# -gt 2 ]; then
-        echo "Usage:  telnet-starttls-imap  host  [port]"
+    if [ $# -ne 1 ]; then
+        echo "Usage: telnet-imap-starttls host [extra openssl args]"
+        echo "Equivalent to: telnet-ssl [host] 143 -debug -starttls imap -crlf [extra openssl args]"
         return 2
-    elif [ $# -eq 1 ]; then
-        openssl s_client -debug -starttls imap -crlf -connect "$1:143"
-    else
-        openssl s_client -debug -starttls imap -crlf -connect "$1:$2"
     fi
+
+    host="$1"
+    shift 1
+    telnet-ssl "$host" 143 -debug -starttls imap -crlf "$@"
 }
-telnet-ssl-sni() {
-    if [ $# -eq 0 -o $# -gt 2 ]; then
-        echo "Usage:  telnet-ssl-sni  host  [port]"
-        return 2
-    elif [ $# -eq 1 ]; then
-        openssl s_client -servername "$1" -connect "$1:443"
-    else
-        openssl s_client -servername "$1" -connect "$1:$2"
+telnet-https-sni() {
+    if [ $# -eq 0 ]; then
+        echo "Usage: telnet-https-sni host [extra openssl args]"
+        echo "Equivalent to: telnet-ssl [host] 443 -servername [host] -quiet [extra openssl args]"
     fi
+
+    host="$1"
+    shift 1
+    telnet-ssl "$host" 443 -servername "$host" -quiet "$@"
 }
 
 
