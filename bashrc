@@ -119,9 +119,14 @@ if shut-up ls -N; then
 fi
 alias ls="ls $_ls_args"
 
-if echo "" | shut-up /usr/bin/which --tty-only --read-alias --read-functions --show-tilde --show-dot cat; then
+_which_path=/usr/bin/which
+if cmd-exists gwhich; then
+    _which_path="$(which gwhich)"
+fi
+
+if echo "" | shut-up "$_which_path" --tty-only --read-alias --read-functions --show-tilde --show-dot cat; then
     which() {
-        (alias; declare -f) | /usr/bin/which --tty-only --read-alias --read-functions --show-tilde --show-dot "$@"
+        (alias; declare -f) | "$_which_path" --tty-only --read-alias --read-functions --show-tilde --show-dot "$@"
     }
     export -f which
 fi
