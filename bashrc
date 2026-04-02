@@ -128,7 +128,6 @@ if echo "" | shut-up "$_which_path" --tty-only --read-alias --read-functions --s
     which() {
         (alias; declare -f) | "$_which_path" --tty-only --read-alias --read-functions --show-tilde --show-dot "$@"
     }
-    export -f which
 fi
 
 # Try to work around various differences in "ps" and "top"
